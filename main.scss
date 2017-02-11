@@ -1,0 +1,37 @@
+// Import libs
+// --------------------
+@import "../../node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Variables
+// --------------------
+$theme-primary: #DB1E21;
+
+// Scaffoldings
+.text-primary {
+  color: $theme-primary;
+}
+
+// TODO
+// --------------------
+
+.done-true {
+  text-decoration: line-through;
+  color: gray;
+  font-style: italic;
+}
+
+.list-group-item-inner {
+  display: flex;
+
+  label {
+    font-size: 18px;
+    width: 100%;
+    padding: 0 15px;
+  }
+}
+
+.item-wrapper {
+  > * {
+    vertical-align: sub;
+  }
+}

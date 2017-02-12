@@ -1,8 +1,7 @@
 var app = angular.module('app', []);
 
-app.controller('todoController', ['$scope', ($scope) => {
+app.controller('todoController', ['$scope', function($scope) {
     $scope.todoItems = [];
-    $scope.message = '';
     var index = 0;
 
     // todoItem を追加
@@ -16,6 +15,29 @@ app.controller('todoController', ['$scope', ($scope) => {
         index++;
     };
 
+    // todoItem を削除
+    this.removeTodoItem = (todoItem) => {
+        var index = 0;
+        var t;
+        for (var i = 0; i < $scope.todoItems.length; i++) {
+            t = $scope.todoItems[i];
+            if (t.id == todoItem.id) {
+                index = i;
+                break;
+            }
+        }
+        $scope.todoItems.splice(index, 1);
+    };
+
+    // 管理している todoItem の編集モードを全てキャンセルする
+    this.cancelAll = () => {
+        $scope.todoItems.forEach((todoItem) => {
+            if (todoItem.isEditMode) {
+                todoItem.cancel();
+            }
+        });
+    };
+
     // 完了アイテム数を取得
     $scope.remaining = () => {
         var count = 0;
@@ -26,56 +48,71 @@ app.controller('todoController', ['$scope', ($scope) => {
     };
 }]);
 
-app.directive('todoList', [() => {
-    interface ImyScope extends ng.IScope {
-        todoItems: any;
-        update: (x: any, y: any) => void;
-        delete: (x: any, y: any) => void;
-    }
+app.directive('todoList', () => {
     return {
         restrict: 'EA',
         replace: true,
-        template:
-            '<ul class="list-group">' +
-                '<li class="list-group-item" ng-repeat="todoItem in todoItems">' +
-                    '<div class="list-group-item-inner">' +
-                        '<div class="item-wrapper"><input type="checkbox" ng-model="todoItem.done"></div>' +
-                        '<label class="done-{{todoItem.done}}" ng-dblclick="update($event, todoItem)">{{todoItem.message}}</label>' +
-                        '<div class="item-wrapper">' +
-                            '<button class="btn btn-xs btn-danger" ng-click="delete($event, todoItem.id)">&times;</button>' +
-                        '</div>' +
-                    '</div>' +
-                '</li>' +
-            '</ul>',
-        link: (scope: ImyScope, iElement) => {
-            // todoItem を更新
-            scope.update = ($event, todoItem) => {
-                var message = window.prompt('変更', todoItem.message);
-                if (message) {
-                    var t;
-                    for (var i = 0; i < scope.todoItems.length; i++) {
-                        t = scope.todoItems[i];
-                        if (t.id == todoItem.id) {
-                            t.message = message;
-                            break;
-                        }
-                    }
-                }
+        controller: 'todoController'
+    }
+});
+
+app.directive('todoItem', () => {
+    return {
+        restrict: 'EA',
+        require: '^todoList',
+        replace: true,
+        template: '<div class="list-group-item">'+
+                    '<div class="list-group-item-inner" ng-hide="isEditMode">' +
+                        '<div class="item-wrapper"><input type="checkbox" ng-model="todo.done" /></div>'+
+                        '<label class="done-{{todo.done}}" ng-dblclick="startEdit(todo)">{{todo.message}}</label>' +
+                        '<div class="item-wrapper"><button class="btn btn-danger btn-xs" ng-click="delete(todo)">&times;</button></div>' +
+                    '</div>'+
+                    '<div ng-show="isEditMode">'+
+                        '<input ng-model="todo.message" class="form-control input-sm" todo-focus ng-blur="updateTodoItem($event)" ng-keyup="updateTodoItem($event)" />' +
+                    '</div>'+
+                  '</div>',
+        scope: {
+            todo: '='
+        },
+        link: (scope: any, element, attrs, TodoController: any) => {
+            scope.isEditMode = false;
+
+            // 編集モードの開始
+            scope.startEdit = (todo) => {
+                TodoController.cancelAll();
+                scope.isEditMode = true;
             };
-            // todoItem を削除
-            scope.delete = ($event, itemId) => {
-                var index = 1;
-                var t;
-                for (var i = 0; i < scope.todoItems.length; i++) {
-                    t = scope.todoItems[i];
-                    if (t.id == itemId) {
-                        index = i;
-                        break;
-                    }
+            // 編集終了
+            scope.updateTodoItem = ($event) => {
+                if ($event.type === 'keyup') {
+                    if ($event.which !== 13) return;
+                } else if ($event.type !== 'blur') {
+                    return;
                 }
-                scope.todoItems.splice(index, 1);
+                scope.isEditMode = false;
+                $event.stopPropagation();
+            };
+            // 編集キャンセル
+            scope.cancel = () => {
+                if (!scope.isEditMode) return;
+                scope.isEditMode = false;
+            };
+            // Todo アイテムを削除
+            scope.delete = (todo) => {
+                TodoController.removeTodoItem(todo);
             };
         }
     }
-}]);
+});
 
+app.directive('todoFocus', ($timeout) => {
+    return {
+        link: (scope: any, element, attrs)=> {
+            scope.$watch('isEditMode', (newVal) => {
+                $timeout(() => {
+                    element[0].focus();
+                }, 0, false);
+            });
+        }
+    }
+});

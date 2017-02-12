@@ -4,29 +4,34 @@
     <title>AngularJS Study</title>
     <meta charset="UTF-8">
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="main.scss">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="main.scss" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script>
     <script src="build/bundle.js"></script>
 </head>
+
 <body>
-  <div ng-app="app">
-      <div ng-controller="todoController">
-          <section class="panel panel-default">
-              <header class="panel-heading">
-                  <div class="input-group">
-                      <input type="text" class="form-control" ng-model="message" placeholder="ToDo ..." />
-                      <span class="input-group-btn">
-                          <button class="btn btn-primary" ng-click="addTodoItem(message)">Add</button>
-                      </span>
-                  </div>
-              </header>
-              <todo-list todo-items="todoItems"></todo-list>
-              <footer class="panel-footer">
-                  <span class="badge">{{remaining()}} / {{todoItems.length}}</span> Items left
-              </footer>
-          </section>
-      </div>
-  </div>
+    <div ng-app="app">
+        <div ng-controller="todoController">
+            <section class="panel panel-default">
+                <header class="panel-heading">
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="message" placeholder="ToDo ..." />
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary" ng-click="addTodoItem(message)">Add</button>
+                        </span>
+                    </div>
+                </header>
+                <todo-list class="list-group">
+                    <!-- [1] -->
+                    <todo-item todo="todoItem" ng-repeat="todoItem in todoItems"></todo-item>
+                </todo-list>
+                <footer class="panel-footer">
+                    <span class="badge">{{remaining()}} / {{todoItems.length}}</span> Items left
+                </footer>
+            </section>
+        </div>
+    </div>
 </body>
+
 </html>

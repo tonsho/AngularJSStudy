@@ -21,19 +21,7 @@
                       </span>
                   </div>
               </header>
-              <ul class="list-group">
-                  <li class="list-group-item" ng-repeat="todoItem in todoItems">
-                      <div class="list-group-item-inner">
-                          <div class="item-wrapper">
-                              <input type="checkbox" ng-model="todoItem.done" />
-                          </div>
-                          <label class="done-{{todoItem.done}}" ng-dblclick="updateTodoItem(todoItem)">{{todoItem.message}}</label>
-                          <div class="item-wrapper">
-                              <button class="btn btn-danger btn-xs" ng-click="removeTodoItem(todoItem.id)">&times;</button>
-                          </div>
-                      </div>
-                  </li>
-              </ul>
+              <todo-list todo-items="todoItems"></todo-list>
               <footer class="panel-footer">
                   <span class="badge">{{remaining()}} / {{todoItems.length}}</span> Items left
               </footer>

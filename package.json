@@ -2,16 +2,15 @@
   "name": "angularjsstudy",
   "version": "0.0.0",
   "scripts": {
-    "start": "npm run build && concurrently \"tsc -w\" \"webpack --watch\" \"lite-server\" ",
+    "start": "npm run build && concurrently \"webpack --watch\" \"lite-server\" ",
     "lite": "lite-server",
     "postinstall": "typings install",
     "tsc": "tsc",
-    "watch": "tsc -w & webpack --watch",
     "tsc:w": "tsc -w",
     "typings": "typings",
     "webpack": "webpack",
     "webpack:w": "webpack --watch",
-    "build": "npm run tsc && npm run webpack"
+    "build": "npm run webpack"
   },
   "license": "ISC",
   "dependencies": {

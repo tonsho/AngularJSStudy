@@ -12,22 +12,22 @@
 
 <body>
     <div ng-app="app">
-        <div ng-controller="todoController">
+        <div ng-controller="todoController as c">
             <section class="panel panel-default">
                 <header class="panel-heading">
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="message" placeholder="ToDo ..." />
+                        <input type="text" class="form-control" ng-model="c.message" placeholder="ToDo ..." />
                         <span class="input-group-btn">
-                            <button class="btn btn-primary" ng-click="addTodoItem(message)">Add</button>
+                            <button class="btn btn-primary" ng-click="c.addTodoItem(c.message)">Add</button>
                         </span>
                     </div>
                 </header>
                 <todo-list class="list-group">
                     <!-- [1] -->
-                    <todo-item todo="todoItem" ng-repeat="todoItem in todoItems"></todo-item>
+                    <todo-item todo="todoItem" ng-repeat="todoItem in c.todoItems"></todo-item>
                 </todo-list>
                 <footer class="panel-footer">
-                    <span class="badge">{{remaining()}} / {{todoItems.length}}</span> Items left
+                    <span class="badge">{{c.remaining()}} / {{c.todoItems.length}}</span> Items left
                 </footer>
             </section>
         </div>

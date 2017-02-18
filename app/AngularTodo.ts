@@ -8,13 +8,6 @@ interface ITodoItemDirectiveScope extends ng.IScope {
     removeTodoItem: Function;
 }
 
-interface ITodoScope extends ng.IScope {
-    todoItems: TodoItem[];
-    addTodoItem: Function;
-    remaining: Function;
-    message: string;
-}
-
 export class TodoItem {
     id: number;
     message: string;
@@ -24,24 +17,22 @@ export class TodoItem {
 
 export class TodoController {
     private index = 0;
+    public todoItems: TodoItem[]
+    public message: string;
 
-    constructor(private $scope: ITodoScope) {
-        this.$scope = $scope
-        $scope.addTodoItem = angular.bind(this, this.addTodoItem);
-        $scope.remaining = angular.bind(this, this.remaining);
-        $scope.message = "";
-        $scope.todoItems = [];
+    constructor() {
+        this.todoItems = [];
     }
 
     // todoItem を追加
     public addTodoItem(msg: string) {
-        this.$scope.todoItems.push({
+        this.todoItems.push({
             id: this.index,
             message: msg,
             done: false,
             isEditMode: false
         });
-        this.$scope.message = "";
+        this.message = "";
         this.index++;
     }
 
@@ -49,20 +40,20 @@ export class TodoController {
     public removeTodoItem(todoItem: TodoItem) {
         var index = 0;
         var t;
-        for (var i = 0; i < this.$scope.todoItems.length; i++) {
-            t = this.$scope.todoItems[i];
+        for (var i = 0; i < this.todoItems.length; i++) {
+            t = this.todoItems[i];
             if (t.id == todoItem.id) {
                 index = i;
                 break;
             }
         }
-        this.$scope.todoItems.splice(index, 1);
+        this.todoItems.splice(index, 1);
     }
 
     // 完了アイテム数を取得
     public remaining() {
         var count = 0;
-        this.$scope.todoItems.forEach((todo: TodoItem) => {
+        this.todoItems.forEach((todo: TodoItem) => {
             if (todo.done) {
                 count += 1;
             }
@@ -137,10 +128,14 @@ export class TodoItemDirective implements ng.IDirective {
 export class TodoListDirective implements ng.IDirective {
     public restrict: string;
     public controller: string;
+    public controllerAs: string;
+    public bindToController: boolean;
 
     constructor() {
         this.restrict = 'EA';
         this.controller = 'todoController';
+        this.controllerAs = 'c';
+        this.bindToController = true;
     }
 
     public static Factory(): ng.IDirectiveFactory {

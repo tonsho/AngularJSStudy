@@ -1,4 +1,5 @@
 import angular = require('angular')
+import AWS = require('aws-sdk')
 
 interface ITodoItemDirectiveScope extends ng.IScope {
     isEditMode: boolean;
@@ -34,6 +35,11 @@ export class TodoController {
         });
         this.message = "";
         this.index++;
+        var s3 = new AWS.S3();
+        s3.listBuckets((err, data) => {
+            console.log(err);
+            console.log(data);
+        });
     }
 
     // todoItem を削除
